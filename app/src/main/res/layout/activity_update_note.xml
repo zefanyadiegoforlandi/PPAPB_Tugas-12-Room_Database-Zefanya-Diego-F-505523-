@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.example.room_zefanyadiegof.UpdateNoteActivity"
+    android:background="@color/light_blue">
+    <!-- Menetapkan properti tata letak, konteks, dan warna latar belakang aktivitas -->
+
+    <ImageView
+        android:id="@+id/editimage"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="3dp"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/baseline_edit_24"></ImageView>
+    <!-- Menambahkan ikon edit pada bagian atas kiri -->
+
+    <TextView
+        android:id="@+id/editNoteHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:fontFamily="@font/poppins"
+        android:text="Edit Note"
+        android:textStyle="bold"
+        android:textColor="@color/gray"
+        android:textSize="24sp">
+    </TextView>
+    <!-- Menambahkan judul "Edit Note" pada bagian atas -->
+
+    <ImageView
+        android:id="@+id/update_Button_Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_done_24"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/editNoteHeading"
+        android:layout_marginEnd="6dp">
+    </ImageView>
+    <!-- Menambahkan tombol simpan dengan ikon done pada bagian atas kanan -->
+
+    <EditText
+        android:id="@+id/update_Title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:hint="Enter the title"
+        android:padding="12dp"
+        android:textSize="20sp"
+        android:layout_below="@+id/editNoteHeading"
+        android:background="@drawable/bg_description"
+        android:layout_marginTop="16dp"
+        android:maxLines="1"
+        android:fontFamily="@font/poppins">
+    </EditText>
+    <!-- Menambahkan EditText untuk judul dengan latar belakang berbentuk segiempat -->
+
+    <EditText
+        android:id="@+id/update_Content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="Enter the description"
+        android:gravity="top"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:fontFamily="@font/poppins"
+        android:background="@drawable/bg_description"
+        android:layout_below="@id/update_Title"
+        android:layout_marginTop="16dp">
+    </EditText>
+    <!-- Menambahkan EditText untuk konten dengan latar belakang berbentuk segiempat -->
+
+</RelativeLayout>

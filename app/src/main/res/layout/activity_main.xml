@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.room_zefanyadiegof.MainActivity"
+    android:background="@color/light_blue">
+    <!-- Menetapkan properti tata letak, konteks, dan warna latar belakang aktivitas -->
+
+    <TextView
+        android:id="@+id/Heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/poppins"
+        android:textStyle="bold"
+        android:text="My Notes"
+        android:layout_marginStart="18dp"
+        android:textColor="@color/gray"
+        android:textSize="36sp">
+    </TextView>
+    <!-- Menambahkan judul "My Notes" pada bagian atas -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="75dp"
+        android:padding="16dp">
+    </androidx.recyclerview.widget.RecyclerView>
+    <!-- Menambahkan RecyclerView untuk menampilkan daftar catatan -->
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/baseline_add_24"
+        app:tint="@color/white"
+        android:backgroundTint="#03A9F4">
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+    <!-- Menambahkan FloatingActionButton (tombol tambah) dengan ikon dan warna latar belakang tertentu -->
+
+</RelativeLayout>
