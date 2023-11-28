@@ -1,9 +1,10 @@
+// Deklarasi package, menentukan nama paket untuk file Kotlin ini.
 package com.example.room_zefanyadiegof
-// Mendefinisikan paket untuk kelas NotesAdapter
 
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,80 +12,109 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.room_zefanyadiegof.R
-// Mengimpor kelas-kelas yang diperlukan
 
-class NotesAdapter(private var notes: List<Note>, context: Context) :
-    RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
-    // Mendeklarasikan kelas NotesAdapter yang merupakan turunan dari RecyclerView.Adapter
 
-    private val db: NoteDatabaseHelper = NoteDatabaseHelper(context)
-    // Membuat objek NoteDatabaseHelper untuk interaksi dengan database
 
+// Mendeklarasikan kelas untuk adapter RecyclerView yang menangani tampilan item catatan.
+class NotesAdapter(private var notes: MutableList<Note>) : RecyclerView.Adapter<NotesAdapter.NoteViewHolder>() {
+
+    // Interface untuk mendengarkan peristiwa penghapusan catatan.
+    interface DeleteNoteListener {
+        fun onNoteDeleted(note: Note)
+    }
+
+    // Variabel listener untuk mendengarkan peristiwa penghapusan catatan.
+    private var deleteNoteListener: DeleteNoteListener? = null
+
+    // Metode untuk menetapkan listener untuk peristiwa penghapusan catatan.
+    fun setDeleteNoteListener(listener: DeleteNoteListener) {
+        deleteNoteListener = listener
+    }
+
+    // Metode untuk menghapus catatan pada posisi tertentu tanpa menghapus data lokal.
+    fun removeNoteAt(position: Int) {
+        // Tidak melakukan penghapusan lokal karena data seharusnya diambil dari Firebase
+        // Hanya memberi tahu adapter bahwa item dihapus
+        notifyItemRemoved(position)
+    }
+
+    // Kelas ViewHolder untuk menyimpan referensi tampilan item catatan.
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // Mendeklarasikan kelas NoteViewHolder yang merupakan turunan dari RecyclerView.ViewHolder
         val titleTextView: TextView = itemView.findViewById(R.id.title_Text)
         val contentTextView: TextView = itemView.findViewById(R.id.content_Text)
         val updateButton: ImageView = itemView.findViewById(R.id.update_Button)
         val deleteButton: ImageView = itemView.findViewById(R.id.delete_Button)
-        // Mendeklarasikan elemen-elemen UI yang akan ditampilkan di setiap item recyclerview
     }
 
+    // Metode untuk membuat ViewHolder baru saat RecyclerView membutuhkannya.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false)
         return NoteViewHolder(view)
-        // Meng-inflate layout item recyclerview dan mengembalikan instance NoteViewHolder
     }
 
+    // Metode untuk mendapatkan jumlah total item dalam dataset.
     override fun getItemCount(): Int = notes.size
-    // Mengembalikan jumlah item dalam recyclerview, yaitu jumlah catatan dalam daftar
 
+    // Metode untuk mengikat data dari dataset ke tampilan item dalam RecyclerView.
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
         val note = notes[position]
+
+        // Menetapkan teks judul dan konten catatan ke tampilan TextView di ViewHolder.
         holder.titleTextView.text = note.title
         holder.contentTextView.text = note.content
-        // Mengisi data catatan ke dalam elemen-elemen UI di setiap item recyclerview
 
-        holder.updateButton.setOnClickListener{
-            // Menambahkan listener untuk tombol "Update"
+        // Menyiapkan pendengar klik untuk tombol "Update".
+        holder.updateButton.setOnClickListener {
+            Log.d("NotesAdapter", "Update button clicked for note ID: ${note.id}")
+            Toast.makeText(holder.itemView.context, "Update button clicked for note ID: ${note.id}", Toast.LENGTH_SHORT).show()
+
+            // Membuat intent untuk membuka UpdateNoteActivity dan menambahkan data catatan ke intent.
             val intent = Intent(holder.itemView.context, UpdateNoteActivity::class.java).apply {
                 putExtra("note_id", note.id)
+                putExtra("note", note)
             }
+            // Memulai aktivitas dengan intent.
             holder.itemView.context.startActivity(intent)
-            // Membuat intent untuk berpindah ke UpdateNoteActivity dengan membawa ID catatan
         }
 
-        holder.deleteButton.setOnClickListener{
-            // Menambahkan listener untuk tombol "Delete"
-            // Menampilkan dialog konfirmasi sebelum menghapus
+        // Menyiapkan pendengar klik untuk tombol "Delete".
+        holder.deleteButton.setOnClickListener {
+            // Menampilkan dialog konfirmasi penghapusan catatan.
             showDeleteConfirmationDialog(holder.itemView.context, note)
         }
     }
 
+    // Metode untuk menampilkan dialog konfirmasi penghapusan catatan.
     private fun showDeleteConfirmationDialog(context: Context, note: Note) {
-        // Menampilkan dialog konfirmasi sebelum menghapus catatan
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Konfirmasi Hapus")
         builder.setMessage("Apakah Anda yakin ingin menghapus catatan ini?")
 
+        // Menetapkan tindakan positif (ya) pada dialog untuk menghapus catatan.
         builder.setPositiveButton("Ya") { _, _ ->
-            // Hapus catatan jika pengguna menekan tombol "Ya"
-            db.deleteNote(note.id)
-            refreshData(db.getAllNotes())
-            Toast.makeText(context, "Catatan dihapus", Toast.LENGTH_SHORT).show()
+            deleteNoteListener?.onNoteDeleted(note)
         }
 
+        // Menetapkan tindakan negatif (tidak) pada dialog untuk membatalkan penghapusan.
         builder.setNegativeButton("Tidak") { _, _ ->
-            // Tidak melakukan apa-apa jika pengguna memilih untuk tidak menghapus
+            // Tidak melakukan apa-apa jika pengguna memilih untuk tidak menghapus.
         }
 
+        // Membuat dan menampilkan dialog konfirmasi.
         val dialog = builder.create()
         dialog.show()
     }
 
+    // Metode untuk menambahkan catatan baru ke dataset dan memberi tahu adapter bahwa data telah berubah.
+    fun addNote(note: Note) {
+        notes.add(note)
+        notifyDataSetChanged()
+    }
+
+    // Metode untuk memperbarui dataset dengan daftar catatan baru dari Firebase dan memberi tahu adapter.
     fun refreshData(newNotes: List<Note>) {
-        // Memperbarui data dalam adapter dan memberitahu recyclerview bahwa data telah berubah
-        notes = newNotes
+        notes.clear()
+        notes.addAll(newNotes)
         notifyDataSetChanged()
     }
 }

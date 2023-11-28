@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:fontFamily="@font/poppins"
-        android:text="Make a Note"
+        android:text="Buat Note"
         android:layout_marginLeft="40dp"
         android:textColor="@color/gray"
         android:textSize="24sp"
